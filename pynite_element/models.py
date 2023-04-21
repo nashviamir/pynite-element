@@ -3,10 +3,9 @@ from math import dist
 
 class Node(object):
 
-    def __init__(self, x, y, index, fx=None, fy=None, dx=None, dy=None):
+    def __init__(self, x, y, fx=None, fy=None, dx=None, dy=None):
         self.x = x
         self.y = y
-        self.index = index
         self.fx = fx
         self.fy = fy
         self.dx = dx
@@ -21,6 +20,22 @@ class Element(object):
     @property
     def stiffness_matrix(self):
         raise NotImplementedError("Abstract Class Element doesnt implement stiffness matrix")
+
+
+class Spring(Element):
+
+    def __init__(self, nodes, stiffness):
+        super().__init__(nodes)
+        self.start, self.end = self.nodes
+        self.stiffness = stiffness
+
+    @property
+    def stiffness_matrix(self):
+        k = self.stiffness * numpy.array([
+            [1, -1],
+            [-1, 1]
+        ])
+        return k
 
 
 class Truss(Element):
@@ -39,7 +54,6 @@ class Truss(Element):
         
         c = (self.end.x - self.start.x) / self.length
         s = (self.end.y - self.start.y) / self.length
-        print(c)
         cc = c ** 2
         ss = s ** 2
         cs = c * s
