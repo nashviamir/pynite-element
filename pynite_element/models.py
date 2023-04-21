@@ -3,9 +3,13 @@ from math import dist
 
 class Node(object):
 
-    def __init__(self, x, y, fx=None, fy=None, dx=None, dy=None):
+    def __init__(self, x, y, index=None, fx=None, fy=None, dx=None, dy=None):
         self.x = x
         self.y = y
+
+        if index is not None:
+            self.index = index
+            
         self.fx = fx
         self.fy = fy
         self.dx = dx
@@ -13,17 +17,24 @@ class Node(object):
     
     
 class Element(object):
-    
+    DOF = 1
     def __init__(self, nodes=None):
         self.nodes = nodes
+        for node in self.nodes:
+            node.DOF = self.DOF
 
     @property
     def stiffness_matrix(self):
         raise NotImplementedError("Abstract Class Element doesnt implement stiffness matrix")
 
+    @property
+    def displacement_matrix(self):
+        raise NotImplementedError("Abstract Class Element doesnt implement displacement matrix")
+
+
 
 class Spring(Element):
-
+    
     def __init__(self, nodes, stiffness):
         super().__init__(nodes)
         self.start, self.end = self.nodes
@@ -36,6 +47,8 @@ class Spring(Element):
             [-1, 1]
         ])
         return k
+
+
 
 
 class Truss(Element):
