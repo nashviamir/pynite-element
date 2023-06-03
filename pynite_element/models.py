@@ -82,28 +82,25 @@ class Truss(Element):
     
 
    
-
 class Beem(Element):
-        def __init__(self, nodes, elasticity, I ):
+        def __init__(self, nodes, elasticity, area ):
             super().__init__(nodes)
             self.start, self.end = self.nodes
-            self.length = dist((self.start.x, self.start.y), (self.end.x, self.end.y))
+            self.length = dist((self.start.x, self.start.y),(self.end.x, self.end.y))
             self.elasticity = elasticity
-            self.I = I
+            self.area = area
 
+        @property
         def stiffness_matrix(self):
           constant =(self.elasticity*self.area)/(self.length)**3 
 
-          L = self.length
-
           k = constant * numpy.array ([    
-                [12  ,   6*L  ,  -12 , 6*L  ],
-                [6*L , 4*L**2  , -6*L ,2*L**2 ],
-                [-12 , -6*L   , 12   , -6*L ],
-                [6*L , 2*L**2  , -6*L ,4*L**2 ],
+                [12            , 6*self.length     , -12            , 6*self.length   ],
+                [6*self.length , 4*self.length**2  , -6*self.length , 2*self.length**2],
+                [-12           , -6*self.length    , 12             , -6*self.length  ],
+                [6*self.length , 2*self.length**2  , -6*self.length , 4*self.length**2],
              ])
           
           return k
-
 
     
