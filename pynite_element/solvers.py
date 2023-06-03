@@ -8,14 +8,12 @@ class Solver(object):
         self.nodes = list(dict.fromkeys(sum([element.nodes for element in self.elements], [])))
         
 
-
     def enumerate_nodes(self):
         for i, node in enumerate(self.nodes):
             node.index = i
 
 class DefaultSolver(Solver):
     
-
     def solve(self):
         stiffness_matrix = self.assemble()
 
