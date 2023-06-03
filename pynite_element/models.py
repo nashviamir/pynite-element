@@ -3,19 +3,26 @@ from math import dist
 
 class Node(object):
 
-    def __init__(self, x, y, index=None, fx=None, fy=None, dx=None, dy=None):
+    def __init__(self, x, y, index=None, fx=None, fy=None, m=None, dx=None, dy=None, phi =None,):
         self.x = x
         self.y = y
+        
 
         if index is not None:
             self.index = index
             
-        self.fx = fx
-        self.fy = fy
-        self.dx = dx
-        self.dy = dy
+        self.fx  = fx
+        self.fy  = fy
+        self.m   = m
+        self.dx  = dx
+        self.dy  = dy
+        self.phi = phi
     
-    
+    @property
+    def displacesments(self):
+        return [self.dx , self.dy , self.phi]
+
+
 class Element(object):
     DOF = 1
     def __init__(self, nodes=None):
