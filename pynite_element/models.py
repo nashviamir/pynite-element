@@ -3,19 +3,26 @@ from math import dist
 
 class Node(object):
 
-    def __init__(self, x, y, index=None, fx=None, fy=None, dx=None, dy=None):
+    def __init__(self, x, y, index=None, fx=None, fy=None, m=None, dx=None, dy=None, phi =None,):
         self.x = x
         self.y = y
+        
 
         if index is not None:
             self.index = index
             
-        self.fx = fx
-        self.fy = fy
-        self.dx = dx
-        self.dy = dy
+        self.fx  = fx
+        self.fy  = fy
+        self.m   = m
+        self.dx  = dx
+        self.dy  = dy
+        self.phi = phi
     
-    
+    @property
+    def displacesments(self):
+        return [self.dx , self.dy , self.phi]
+
+
 class Element(object):
     DOF = 1
     def __init__(self, nodes=None):
@@ -79,3 +86,28 @@ class Truss(Element):
         ])
 
         return k
+    
+
+   
+class Beem(Element):
+        def __init__(self, nodes, elasticity, area ):
+            super().__init__(nodes)
+            self.start, self.end = self.nodes
+            self.length = dist((self.start.x, self.start.y),(self.end.x, self.end.y))
+            self.elasticity = elasticity
+            self.area = area
+
+        @property
+        def stiffness_matrix(self):
+          constant =(self.elasticity*self.area)/(self.length)**3 
+
+          k = constant * numpy.array ([    
+                [12            , 6*self.length     , -12            , 6*self.length   ],
+                [6*self.length , 4*self.length**2  , -6*self.length , 2*self.length**2],
+                [-12           , -6*self.length    , 12             , -6*self.length  ],
+                [6*self.length , 2*self.length**2  , -6*self.length , 4*self.length**2],
+             ])
+          
+          return k
+
+    

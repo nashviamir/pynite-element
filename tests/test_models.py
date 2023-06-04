@@ -1,5 +1,8 @@
 import unittest
 import numpy
+import os
+import sys
+sys.path.append(os.path.abspath('..'))
 from pynite_element import models
 
 class TestTrussModel(unittest.TestCase):
@@ -35,6 +38,29 @@ class TestSpringModel(unittest.TestCase):
         ])
         comparison = self.spring.stiffness_matrix == actual_stiffness_matrix
         self.assertTrue(comparison.all())
+
+
+
+
+class TestBeemModel(unittest.TestCase):
+
+    def setUp(self):
+        self.Beem = models.Beem(
+            nodes=[models.Node(0, 0), models.Node(0, 3)],
+            elasticity= 210 * (10 ** 9),
+            area= 4 * (10**-4),
+        )
+
+    def test_stiffness_matrix(self):
+        actual_stiffness_matrix = (((210 * (10 ** 9))*(4 * (10**-4 ))) / 3**3) * numpy.array([
+            [ 12 ,  18 , -12  ,  18],
+            [ 18 ,  36 , -18  ,  18],
+            [-12 , -18 ,  12  , -18],
+            [ 18 ,  18 , -18  ,  36]
+        ])
+        comparison = self.Beem.stiffness_matrix == actual_stiffness_matrix
+        self.assertTrue(comparison.all())
+
 
 
 if __name__ == '__main__':
