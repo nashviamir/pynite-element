@@ -7,7 +7,7 @@ class TestDefaultSolver(unittest.TestCase):
     def setUp(self):
         node1 = models.Node(0, 0, dx=0)
         node2 = models.Node(100, 0)
-        node3 = models.Node(200, 0)
+        node3 = models.Node(200, 0, fx=50)
         element1 = models.Spring(
             nodes=[node1, node2],
             stiffness=1000
@@ -42,6 +42,18 @@ class TestDefaultSolver(unittest.TestCase):
         solver_displacement_matrix = self.solver.get_displacement_matrix()
         comparison = actual_displacement_matrix == solver_displacement_matrix
         self.assertTrue(comparison.all())
+
+    def test_force_matrix(self):
+        actual_force_matrix = numpy.array([
+            [0],
+            [0],
+            [50]
+        ])
+
+        solver_force_matrix = self.solver.get_force_matrix()
+        comparison = actual_force_matrix == solver_force_matrix
+        self.assertTrue(comparison.all())
+
 
     def test_stiffness_matrix_reduction(self):
         stiffness_matrix = self.solver.assemble()

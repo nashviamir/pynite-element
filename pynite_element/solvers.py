@@ -46,6 +46,17 @@ class DefaultSolver(Solver):
 
         return self.displacement_matrix
 
+    def get_force_matrix(self):
+        self.force_matrix = numpy.zeros((self.SYS_DOF,1))
+        for element in self.elements:
+            element_force_matrix = element.force_matrix
+
+            addresses = self.create_addresses(element)
+            for i , addr in enumerate(addresses):
+                if not element.force_matrix[i] is None:
+                    self.force_matrix[addr, 0] = element.force_matrix[i]
+
+        return self.force_matrix
 
     def reduce_stiffness_matrix(self, stiffness_matrix):
         indexes_to_remove = [i for i, value in enumerate(self.get_displacement_matrix().transpose()[0]) if value == 0]

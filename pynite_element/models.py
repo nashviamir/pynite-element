@@ -39,6 +39,9 @@ class Element(object):
     def displacement_matrix(self):
         raise NotImplementedError("Abstract Class Element doesnt implement displacement matrix")
 
+    @property
+    def force_matrix(self):
+        raise NotImplementedError("Abstract Class Element doesnt implement force matrix")
 
 
 class Spring(Element):
@@ -59,6 +62,10 @@ class Spring(Element):
     @property
     def displacement_matrix(self):
         return [self.start.dx, self.end.dx]
+
+    @property
+    def force_matrix(self):
+        return [self.start.fx, self.end.fx]
 
 
 
@@ -95,6 +102,10 @@ class Truss(Element):
     @property
     def displacement_matrix(self):
         return [self.start.dx, self.start.dy, self.end.dx, self.end.dy]
+
+    @property
+    def force_matrix(self):
+        return [self.start.fx, self.start.fy, self.end.fx, self.end.fy]
     
 
    
@@ -124,4 +135,8 @@ class Beem(Element):
             return [self.start.dy, self.start.phi, self.end.dy, self.end.phi]
         
 
+        @property
+        def force_matrix(self):
+            return [self.start.fx, self.start.m, self.end.fx, self.end.m]
+    
     
