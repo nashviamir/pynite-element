@@ -25,8 +25,19 @@ class DefaultSolver(Solver):
 
         for element in self.elements:
             element_stiffness_matrix = element.stiffness_matrix
-            for i, row in enumerate(element.nodes):
-                for j, column in enumerate(element.nodes):
-                    stiffness_matrix[row.index][column.index] += element_stiffness_matrix[i][j]
+            
+            addresses = self.create_addresses(element)
+            print(addresses)
+            for i, row_addr in enumerate(addresses):
+                for j, col_addr in enumerate(addresses):
+                    stiffness_matrix[row_addr][col_addr] += element_stiffness_matrix[i][j]
 
         return stiffness_matrix
+
+    def create_addresses(self, element):
+        addresses = []
+        for node in element.nodes:
+            for i in reversed(range(element.DOF)):
+                addresses.append(element.DOF * node.index - i)
+
+        return addresses

@@ -17,6 +17,7 @@ class Node(object):
         self.dx  = dx
         self.dy  = dy
         self.phi = phi
+
     
     @property
     def displacesments(self):
@@ -55,6 +56,10 @@ class Spring(Element):
         ])
         return k
 
+    @property
+    def displacement_matrix(self):
+        return [self.start.dx, self.end.dx]
+
 
 
 
@@ -86,6 +91,10 @@ class Truss(Element):
         ])
 
         return k
+
+    @property
+    def displacement_matrix(self):
+        return [self.start.dx, self.start.dy, self.end.dx, self.end.dy]
     
 
    
@@ -109,5 +118,10 @@ class Beem(Element):
              ])
           
           return k
+
+        @property
+        def displacement_matrix(self):
+            return [self.start.dy, self.start.phi, self.end.dy, self.end.phi]
+        
 
     
