@@ -1,7 +1,8 @@
 import unittest
 import numpy
-import sys 
-sys.path.append("C:\\Users\\arian\\OneDrive\\Desktop\\projects\\finit_element_methode\\Pynite\\pynite-element")
+import os
+import sys
+sys.path.append(os.path.abspath('..'))
 from pynite_element import models
 
 class TestTrussModel(unittest.TestCase):
