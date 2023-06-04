@@ -32,6 +32,7 @@ class TestDefaultSolver(unittest.TestCase):
         comparison = actual_stiffness_matrix == assambled_stiffness_matrix
 
         self.assertTrue(comparison.all())
+        self.assertTrue(comparison.all())
 
 if __name__ == '__main__':
     unittest.main()

@@ -27,7 +27,6 @@ class DefaultSolver(Solver):
             element_stiffness_matrix = element.stiffness_matrix
             
             addresses = self.create_addresses(element)
-            print(addresses)
             for i, row_addr in enumerate(addresses):
                 for j, col_addr in enumerate(addresses):
                     stiffness_matrix[row_addr][col_addr] += element_stiffness_matrix[i][j]
