@@ -5,7 +5,7 @@ from pynite_element import solvers, models
 
 class TestDefaultSolver(unittest.TestCase):
     def setUp(self):
-        node1 = models.Node(0, 0)
+        node1 = models.Node(0, 0, dx=0)
         node2 = models.Node(100, 0)
         node3 = models.Node(200, 0)
         element1 = models.Spring(
@@ -28,10 +28,29 @@ class TestDefaultSolver(unittest.TestCase):
         ])
 
         assambled_stiffness_matrix = self.solver.assemble()
-        print(self.solver.assemble())
         comparison = actual_stiffness_matrix == assambled_stiffness_matrix
 
         self.assertTrue(comparison.all())
+
+    def test_displacement_matrix(self):
+        actual_displacement_matrix = numpy.array([
+            [0],
+            [1],
+            [1]
+        ])
+
+        solver_displacement_matrix = self.solver.get_displacement_matrix()
+        comparison = actual_displacement_matrix == solver_displacement_matrix
+        self.assertTrue(comparison.all())
+
+    def test_stiffness_matrix_reduction(self):
+        stiffness_matrix = self.solver.assemble()
+        solver_reduced_stiffness_matrix = self.solver.reduce_stiffness_matrix(stiffness_matrix)
+        actual_reduced_stiffness_matrix = numpy.array([
+            [3000, -2000,],
+            [-2000,  2000,]
+        ])
+        comparison = actual_reduced_stiffness_matrix == solver_reduced_stiffness_matrix
         self.assertTrue(comparison.all())
 
 if __name__ == '__main__':
