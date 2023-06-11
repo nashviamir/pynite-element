@@ -53,6 +53,10 @@ class TestDefaultSolver(unittest.TestCase):
         ])
         comparison = actual_reduced_stiffness_matrix == solver_reduced_stiffness_matrix
         self.assertTrue(comparison.all())
+
+    def test_solver_plot(self):
+        self.solver.solve()
+        self.solver.plot()
         
 
 

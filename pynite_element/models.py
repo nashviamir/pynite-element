@@ -47,6 +47,9 @@ class Element(object):
     def force_matrix(self):
         raise NotImplementedError("Abstract Class Element doesnt implement force matrix")
 
+    def set_results(self):
+        raise NotImplementedError("Abstract Class Element doesnt implement set_results method")
+
 
 class Spring(Element):
     
@@ -71,7 +74,10 @@ class Spring(Element):
     def force_matrix(self):
         return [self.start.fx, self.end.fx]
 
-
+    def set_results(self):
+        self.start.dx, self.end.dx = self.result_displacement
+        self.start.fx, self.end.fx = self.result_force
+            
 
 
 class Truss(Element):
@@ -112,7 +118,10 @@ class Truss(Element):
         return [self.start.fx, self.start.fy, self.end.fx, self.end.fy]
     
 
-   
+    def set_results(self):
+        self.start.dx, self.start.dy, self.end.dx, self.end.dy = self.result_displacement
+        self.start.fx, self.start.fy, self.end.fx, self.end.fy = self.result_force
+
 class Beem(Element):
         def __init__(self, nodes, elasticity, area ):
             super().__init__(nodes)
@@ -141,6 +150,9 @@ class Beem(Element):
 
         @property
         def force_matrix(self):
-            return [self.start.fx, self.start.m, self.end.fx, self.end.m]
+            return [self.start.fy, self.start.m, self.end.fy, self.end.m]
     
+        def set_results(self):
+            self.start.dy, self.start.phi, self.end.dy, self.end.phi = self.result_displacement
+            self.start.fy, self.start.m, self.end.fy, self.end.m = self.result_force
     

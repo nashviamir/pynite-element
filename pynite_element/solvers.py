@@ -1,7 +1,8 @@
 import numpy
 import json
 from .models import Spring, Truss, Beem, Node
-
+import matplotlib.pyplot as plt
+from matplotlib import collections  as mc
 
 class Solver(object):
 
@@ -36,9 +37,25 @@ class DefaultSolver(Solver):
 
         return cls(elements=elements)
 
+    def plot(self):
+        elements = [[(element.start.x, element.start.y), (element.end.x, element.end.y)] for element in self.elements]
+
+        lines = mc.LineCollection(elements)
+        fig, ax = plt.subplots()
+        ax.add_collection(lines)
+        ax.autoscale()
+        x_nodes = [node.x for node in self.nodes]
+        y_nodes = [node.y for node in self.nodes]
+        ax.scatter(x_nodes, y_nodes)
+        
+        elements_results = [[(element.start.x + (element.start.dx or 0), element.start.y + (element.start.dy or 0)), (element.end.x + (element.end.dx or 0), element.end.y + (element.end.dy or 0))] for element in self.elements]
+        lines = mc.LineCollection(elements_results, colors="red")
+        ax.add_collection(lines)
+        x_nodes_result = [node.x + (node.dx or 0) for node in self.nodes]
+        y_nodes_result = [node.y + (node.dy or 0) for node in self.nodes]
+        ax.scatter(x_nodes_result, y_nodes_result, color="red")
+        plt.show()
                 
-
-
     def solve(self):
         #preprocessing
         self.enumerate_nodes()
@@ -75,6 +92,7 @@ class DefaultSolver(Solver):
             for addr in addresses:
                 element.result_displacement.append(displacements[addr, 0])
                 element.result_force.append(forces[addr, 0])
+            element.set_results()
 
     def assemble(self):
         self.stiffness_matrix = numpy.zeros([self.SYS_DOF, self.SYS_DOF])
