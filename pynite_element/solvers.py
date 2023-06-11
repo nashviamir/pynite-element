@@ -31,7 +31,9 @@ class DefaultSolver(Solver):
             nodes = [Node(**node_data) for node_data in data["nodes"]]
             for i, element in enumerate(data["elements"]):
                 model_type = element.pop("type")
-                element["nodes"] = [nodes[i], nodes[i + 1]]
+                start = element.pop("start")
+                end = element.pop("end")
+                element["nodes"] = [nodes[start], nodes[end]]
                 element = models[model_type](**element)
                 elements.append(element)
 

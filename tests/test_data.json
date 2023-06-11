@@ -7,12 +7,12 @@
             "dx": 0
         },
         {
-            "index": 2,
+            "index": 1,
             "x": 100,
             "y": 0
         },
         {
-            "index": 3,
+            "index": 2,
             "x": 200,
             "y": 0,
             "fx": 50
@@ -21,11 +21,15 @@
     "elements": [
         {
             "type": "spring",
-            "stiffness": 1000
+            "stiffness": 1000,
+            "start": 0,
+            "end": 1
         },
         {
             "type": "spring",
-            "stiffness": 2000
+            "stiffness": 2000,
+            "start": 1,
+            "end": 2
         }
     ]
 }
