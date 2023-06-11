@@ -16,10 +16,42 @@ class Solver(object):
 class DefaultSolver(Solver):
     
     def solve(self):
+        #preprocessing
         self.enumerate_nodes()
         stiffness_matrix = self.assemble()
+        force_matrix = self.get_force_matrix()
+        displacement_matrix = self.get_displacement_matrix()
 
-    
+        # matrix reduction (deleting rows and columns of constrained nodes)
+        reduced_stiffness_matrix = self.reduce_matrix(stiffness_matrix, column=True)
+        reduced_force_matrix = self.reduce_matrix(force_matrix)
+        reduced_displacement_matrix = self.reduce_matrix(displacement_matrix)
+        
+        #processing
+        displacement_results = numpy.matmul(numpy.linalg.inv(reduced_stiffness_matrix), reduced_force_matrix)
+        transposed_displacement_results = iter(displacement_results.transpose()[0])
+
+        for i, displacement in enumerate(displacement_matrix.transpose()[0]):
+            if displacement == 1:
+                displacement_matrix[i,0] = next(transposed_displacement_results)
+
+        force_results = numpy.matmul(stiffness_matrix, displacement_matrix)
+        transposed_force_results = iter(force_results.transpose()[0])
+        for i, force in enumerate(force_matrix.transpose()[0]):
+            if force == 0:
+                force_matrix[i,0] = next(transposed_force_results)
+
+        self.set_results(displacement_matrix, force_matrix)
+
+        
+            
+    def set_results(self, displacements, forces):
+        for element in self.elements:
+            addresses = self.create_addresses(element)
+            for addr in addresses:
+                element.result_displacement.append(displacements[addr, 0])
+                element.result_force.append(forces[addr, 0])
+
     def assemble(self):
         self.stiffness_matrix = numpy.zeros([self.SYS_DOF, self.SYS_DOF])
 
@@ -58,11 +90,12 @@ class DefaultSolver(Solver):
 
         return self.force_matrix
 
-    def reduce_stiffness_matrix(self, stiffness_matrix):
+    def reduce_matrix(self, matrix, column=False):
         indexes_to_remove = [i for i, value in enumerate(self.get_displacement_matrix().transpose()[0]) if value == 0]
-        self.reduced_stiffness_matrix = numpy.delete(stiffness_matrix, indexes_to_remove, 0)
-        self.reduced_stiffness_matrix = numpy.delete(self.reduced_stiffness_matrix, indexes_to_remove, 1)
-        return self.reduced_stiffness_matrix
+        reduced_matrix = numpy.delete(matrix, indexes_to_remove, 0)
+        if column:
+            reduced_matrix = numpy.delete(reduced_matrix, indexes_to_remove, 1)
+        return reduced_matrix
             
 
 

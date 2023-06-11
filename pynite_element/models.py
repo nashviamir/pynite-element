@@ -28,8 +28,12 @@ class Element(object):
     DOF = 1
     def __init__(self, nodes=None):
         self.nodes = nodes
+        self.result_displacement = []
+        self.result_force = []
         for node in self.nodes:
             node.DOF = self.DOF
+
+
 
     @property
     def stiffness_matrix(self):

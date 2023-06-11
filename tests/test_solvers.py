@@ -55,15 +55,17 @@ class TestDefaultSolver(unittest.TestCase):
         self.assertTrue(comparison.all())
 
 
-    def test_stiffness_matrix_reduction(self):
+    def test_matrix_reduction(self):
         stiffness_matrix = self.solver.assemble()
-        solver_reduced_stiffness_matrix = self.solver.reduce_stiffness_matrix(stiffness_matrix)
+        solver_reduced_stiffness_matrix = self.solver.reduce_matrix(stiffness_matrix, column=True)
         actual_reduced_stiffness_matrix = numpy.array([
             [3000, -2000,],
             [-2000,  2000,]
         ])
         comparison = actual_reduced_stiffness_matrix == solver_reduced_stiffness_matrix
         self.assertTrue(comparison.all())
+        
+
 
 if __name__ == '__main__':
     unittest.main()
