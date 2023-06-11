@@ -1,4 +1,6 @@
 import numpy
+import json
+from .models import Spring, Truss, Beem, Node
 
 
 class Solver(object):
@@ -15,6 +17,28 @@ class Solver(object):
 
 class DefaultSolver(Solver):
     
+    @classmethod
+    def from_json(cls, filename):
+        models = {
+            "spring": Spring,
+            "truss": Truss,
+            "beem": Beem
+        }
+        elements = []
+        with open(filename, "r") as file:
+            data = json.load(file)
+            nodes = [Node(**node_data) for node_data in data["nodes"]]
+            for i, element in enumerate(data["elements"]):
+                model_type = element.pop("type")
+                element["nodes"] = [nodes[i], nodes[i + 1]]
+                element = models[model_type](**element)
+                elements.append(element)
+
+        return cls(elements=elements)
+
+                
+
+
     def solve(self):
         #preprocessing
         self.enumerate_nodes()

@@ -5,18 +5,7 @@ from pynite_element import solvers, models
 
 class TestDefaultSolver(unittest.TestCase):
     def setUp(self):
-        node1 = models.Node(0, 0, dx=0)
-        node2 = models.Node(100, 0)
-        node3 = models.Node(200, 0, fx=50)
-        element1 = models.Spring(
-            nodes=[node1, node2],
-            stiffness=1000
-        )
-        element2 = models.Spring(
-            nodes=[node2, node3],
-            stiffness=2000
-        )
-        self.solver = solvers.DefaultSolver(elements=[element1, element2])
+        self.solver = solvers.DefaultSolver.from_json("E:\\python packages\\pynite-element\\tests\\test_data.json")
         self.solver.enumerate_nodes()
         
 
