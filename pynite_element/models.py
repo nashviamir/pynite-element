@@ -81,7 +81,7 @@ class Spring(Element):
 
 
 class Truss(Element):
-    
+    DOF = 2
     def __init__(self, nodes, elasticity, area):
         super().__init__(nodes)
         self.start, self.end = self.nodes
@@ -123,36 +123,37 @@ class Truss(Element):
         self.start.fx, self.start.fy, self.end.fx, self.end.fy = self.result_force
 
 class Beem(Element):
-        def __init__(self, nodes, elasticity, area ):
-            super().__init__(nodes)
-            self.start, self.end = self.nodes
-            self.length = dist((self.start.x, self.start.y),(self.end.x, self.end.y))
-            self.elasticity = elasticity
-            self.area = area
+    DOF = 2
+    def __init__(self, nodes, elasticity, area ):
+        super().__init__(nodes)
+        self.start, self.end = self.nodes
+        self.length = dist((self.start.x, self.start.y),(self.end.x, self.end.y))
+        self.elasticity = elasticity
+        self.area = area
 
-        @property
-        def stiffness_matrix(self):
-          constant =(self.elasticity*self.area)/(self.length)**3 
+    @property
+    def stiffness_matrix(self):
+        constant =(self.elasticity*self.area)/(self.length)**3 
 
-          k = constant * numpy.array ([    
-                [12            , 6*self.length     , -12            , 6*self.length   ],
-                [6*self.length , 4*self.length**2  , -6*self.length , 2*self.length**2],
-                [-12           , -6*self.length    , 12             , -6*self.length  ],
-                [6*self.length , 2*self.length**2  , -6*self.length , 4*self.length**2],
-             ])
-          
-          return k
-
-        @property
-        def displacement_matrix(self):
-            return [self.start.dy, self.start.phi, self.end.dy, self.end.phi]
+        k = constant * numpy.array ([    
+            [12            , 6*self.length     , -12            , 6*self.length   ],
+            [6*self.length , 4*self.length**2  , -6*self.length , 2*self.length**2],
+            [-12           , -6*self.length    , 12             , -6*self.length  ],
+            [6*self.length , 2*self.length**2  , -6*self.length , 4*self.length**2],
+            ])
         
+        return k
 
-        @property
-        def force_matrix(self):
-            return [self.start.fy, self.start.m, self.end.fy, self.end.m]
+    @property
+    def displacement_matrix(self):
+        return [self.start.dy, self.start.phi, self.end.dy, self.end.phi]
     
-        def set_results(self):
-            self.start.dy, self.start.phi, self.end.dy, self.end.phi = self.result_displacement
-            self.start.fy, self.start.m, self.end.fy, self.end.m = self.result_force
+
+    @property
+    def force_matrix(self):
+        return [self.start.fy, self.start.m, self.end.fy, self.end.m]
+
+    def set_results(self):
+        self.start.dy, self.start.phi, self.end.dy, self.end.phi = self.result_displacement
+        self.start.fy, self.start.m, self.end.fy, self.end.m = self.result_force
     

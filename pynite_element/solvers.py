@@ -70,6 +70,7 @@ class DefaultSolver(Solver):
         reduced_force_matrix = self.reduce_matrix(force_matrix)
         reduced_displacement_matrix = self.reduce_matrix(displacement_matrix)
         
+        print(reduced_stiffness_matrix)
         #processing
         displacement_results = numpy.matmul(numpy.linalg.inv(reduced_stiffness_matrix), reduced_force_matrix)
         transposed_displacement_results = iter(displacement_results.transpose()[0])
@@ -94,6 +95,7 @@ class DefaultSolver(Solver):
             for addr in addresses:
                 element.result_displacement.append(displacements[addr, 0])
                 element.result_force.append(forces[addr, 0])
+
             element.set_results()
 
     def assemble(self):
@@ -135,6 +137,7 @@ class DefaultSolver(Solver):
         return self.force_matrix
 
     def reduce_matrix(self, matrix, column=False):
+        print(matrix)
         indexes_to_remove = [i for i, value in enumerate(self.get_displacement_matrix().transpose()[0]) if value == 0]
         reduced_matrix = numpy.delete(matrix, indexes_to_remove, 0)
         if column:
