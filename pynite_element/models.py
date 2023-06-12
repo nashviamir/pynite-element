@@ -101,13 +101,19 @@ class Beem(Element):
         def stiffness_matrix(self):
           constant =(self.elasticity*self.area)/(self.length)**3 
 
-          k = constant * numpy.array ([    
-                [12            , 6*self.length     , -12            , 6*self.length   ],
-                [6*self.length , 4*self.length**2  , -6*self.length , 2*self.length**2],
-                [-12           , -6*self.length    , 12             , -6*self.length  ],
-                [6*self.length , 2*self.length**2  , -6*self.length , 4*self.length**2],
-             ])
+          c = (self.end.x - self.start.x) / self.length
+          s = (self.end.y - self.start.y) / self.length
+         
+          k = constant*numpy.array ([    
+                [ 12*s**2         , -12*s*c             , -6*self.length*s    , -12*s**2           ,  12*s*c          , -6*self.length*s  ],
+                [-12*s*c          ,  12*c**2            ,  6*self.length*c    ,  12*s*c            , -12*c**2         ,  6*self.length*c  ],
+                [-6*self.length*s ,  6*self.length*c    ,  4*self.length**2   ,  6*self.length*s   , -6*self.length*c ,  2*self.length**2 ],
+                [-12*s**2         ,  12*s*c             ,  6*self.length*s    ,  12*s**2           , -12*s*c          ,  6*self.length*s  ],                
+                [ 12*s*c          , -12*c**2            , -6*self.length*c    , -12*s*c            ,  12*c**2         , -6*self.length*c  ],
+                [-6*self.length*s ,  6*self.length*c    ,  2*self.length**2   ,  6*self.length*s   , -6*self.length*s ,  4*self.length**2 ]
+             ])   
           
+
           return k
 
     
