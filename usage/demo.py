@@ -5,4 +5,7 @@ solver = DefaultSolver.from_json("E:\\python packages\\pynite-element\\usage\\da
 
 solver.solve()
 solver.plot()
+
+print("displacements: ", solver.displacements_results, sep="\n")
+print("forces: ", solver.forces_results, sep="\n")
      
